@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escolha um Esmalte</title>
+  <style>
+    /* Estilo geral */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e6d5f7; /* Fundo lilás */
+      background-image: url('https://cdn.pixabay.com/photo/2016/11/29/12/54/sunflowers-1867468_960_720.jpg'); /* Fundo com girassóis */
+      background-size: cover;
+      background-attachment: fixed;
+      color: #5a3b99;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px #fff;
+    }
+
+    /* Container central */
+    .container {
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+    }
+
+    /* Estilo do sorteio */
+    .sorteio {
+      font-size: 2em;
+      font-weight: bold;
+      color: #7c5bb5;
+      margin: 20px 0;
+      min-height: 50px; /* Garante espaço para o texto */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeIn 1s ease-in-out forwards; /* Efeito de entrada suave */
+    }
+
+    /* Visualizador da cor sorteada */
+    .cor-visual {
+      width: 100px;
+      height: 100px;
+      margin: 10px auto;
+      border-radius: 15px; /* Bordas arredondadas */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      background-color: transparent; /* Inicialmente transparente */
+      visibility: hidden; /* Esconde inicialmente */
+      opacity: 0; /* Invisível inicialmente */
+      transform: scale(0.8); /* Menor no início */
+      transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+    }
+
+    .cor-visual.visible {
+      visibility: visible;
+      opacity: 1; /* Torna visível */
+      transform: scale(1); /* Expande para tamanho normal */
+    }
+
+    /* Botões */
+    button {
+      background-color: #7c5bb5;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #5a3b99;
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @media (max-width: 600px) {
+  .container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .sorteio {
+    font-size: 1.5em;
+  }
+}
+.container {
+  max-width: 95%;
+}
+button:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Entt tá, vamos escolher um esmalte pra você</h1>
+
+    <!-- Área de exibição do sorteio -->
+    <div class="sorteio" id="sorteio">...</div>
+
+    <!-- Visualizador da cor -->
+    <div class="cor-visual" id="corVisual"></div>
+
+    <button id="esmalte">Escolher tonalidade</button>
+    <button id="escolher-novamente" style="display: none;">Quer escolher outro, meu bem?</button>
+  </div>
+
+  <script>
+    const sorteioDiv = document.getElementById("sorteio");
+    const corVisual = document.getElementById("corVisual");
+    const esmalteBtn = document.getElementById("esmalte");
+    const escolherNovamenteBtn = document.getElementById("escolher-novamente");
+
+    const roxos = [
+      { nome: "Lavanda", cor: "#E6E6FA" },
+      { nome: "Lilás", cor: "#C8A2C8" },
+      { nome: "Ametista", cor: "#9966CC" },
+      { nome: "Orquídea", cor: "#DA70D6" },
+      { nome: "Violeta", cor: "#8B00FF" },
+      { nome: "Magenta", cor: "#FF00FF" },
+      { nome: "Púrpura", cor: "#800080" },
+      { nome: "Berinjela", cor: "#4B0082" }
+    ];
+
+    let sorteando; // Variável para armazenar o intervalo do sorteio
+
+    function iniciarSorteio() {
+      let index = 0; // Índice para alternar os nomes
+
+      // Oculta o visualizador de cor durante o sorteio
+      corVisual.classList.remove("visible");
+
+      // Remove animação inicial do texto
+      sorteioDiv.style.opacity = 0;
+
+      // Atualiza o texto rapidamente
+      sorteando = setInterval(() => {
+        sorteioDiv.textContent = roxos[index].nome;
+        index = (index + 1) % roxos.length; // Incrementa e reinicia no início
+      }, 100); // Troca a cada 100ms
+
+      // Após 5 segundos, escolhe o nome final
+      setTimeout(() => {
+        clearInterval(sorteando); // Para o sorteio
+        const sorteado = roxos[Math.floor(Math.random() * roxos.length)]; // Sorteia uma cor
+        sorteioDiv.textContent = sorteado.nome; // Exibe o nome final
+        sorteioDiv.style.animation = "fadeIn 1s ease-in-out forwards"; // Aplica fade-in
+
+        // Atualiza o visualizador de cor
+        corVisual.style.backgroundColor = sorteado.cor;
+        corVisual.classList.add("visible"); // Torna visível com animação
+
+        escolherNovamenteBtn.style.display = "inline-block"; // Mostra o botão de reinício
+      }, 5000); // Duração do sorteio (5 segundos)
+    }
+
+    esmalteBtn.addEventListener("click", iniciarSorteio);
+
+    escolherNovamenteBtn.addEventListener("click", function () {
+      sorteioDiv.textContent = "..."; // Reseta o texto
+      corVisual.classList.remove("visible"); // Remove animação
+      escolherNovamenteBtn.style.display = "none"; // Esconde o botão novamente
+    });
+  </script>
+</body>
+</html>
